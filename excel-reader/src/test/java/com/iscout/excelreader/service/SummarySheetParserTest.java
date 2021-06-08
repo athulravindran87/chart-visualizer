@@ -1,9 +1,7 @@
 package com.iscout.excelreader.service;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.iscout.excelreader.bean.DataBeanConfig;
 import com.iscout.excelreader.model.SummaryChart;
 import com.iscout.excelreader.model.SummarySheet;
 import org.eclipse.collections.api.list.MutableList;
@@ -76,11 +74,7 @@ public class SummarySheetParserTest {
         MutableList<SummarySheet> test = SummarySheetParser.parseExcel("test", "Summary program.xlsx");
         SummaryChart summaryChart = SummarySheetParser.preProcessData(test);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        String json = mapper.writeValueAsString(summaryChart);
+        String json = new DataBeanConfig().objectMapper().writeValueAsString(summaryChart);
         assertNotNull(json);
     }
 }

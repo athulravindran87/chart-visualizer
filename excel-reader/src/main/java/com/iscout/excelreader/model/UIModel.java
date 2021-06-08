@@ -13,7 +13,7 @@ public class UIModel {
     private String pCaption;
     private String pClass;
     private int pComp;
-    private String pCost;
+    private int pCost;
     private String pDepend;
     private String pEnd;
     private int pGroup;
@@ -70,11 +70,11 @@ public class UIModel {
         this.pComp = pComp;
     }
 
-    public String getpCost() {
+    public int getpCost() {
         return pCost;
     }
 
-    public void setpCost(String pCost) {
+    public void setpCost(int pCost) {
         this.pCost = pCost;
     }
 
