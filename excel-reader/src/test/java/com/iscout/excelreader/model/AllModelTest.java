@@ -6,7 +6,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         SummaryChartTest.class,
-        SummarySheetTest.class
+        SummarySheetTest.class,
+        UIModelTest.class
 })
 public class AllModelTest {
 }
