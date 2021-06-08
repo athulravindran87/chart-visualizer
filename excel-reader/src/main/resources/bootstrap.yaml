@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: excel-reader
+  profiles: local
+file:
+  location: /tmp
