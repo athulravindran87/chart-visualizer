@@ -1,12 +1,13 @@
 package com.iscout.excelreader.service;
 
+import com.iscout.excelreader.bean.DataBeanConfig;
 import com.iscout.excelreader.model.SummaryChart;
 import com.iscout.excelreader.model.SummarySheet;
 import com.iscout.excelreader.model.UIModel;
-import com.iscout.excelreader.util.FileHelper;
 import com.poiji.bind.Poiji;
 import com.poiji.option.PoijiOptions;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.collections.api.bag.MutableBag;
 import org.eclipse.collections.api.list.MutableList;
@@ -30,10 +31,20 @@ public class ParserService {
     private final static MutableList<String> COLORS = Lists.mutable.of("gtaskblue",
                                                                        "gtaskred", "gtaskgreen", "gtaskyellow", "gtaskpurple", "gtaskpink");
 
-    public MutableSet<UIModel> parseExcelToJson(String fileLocation, String fileName) throws Exception {
+    private final DataBeanConfig dataBeanConfig;
+
+    public ParserService(DataBeanConfig dataBeanConfig) {
+        this.dataBeanConfig = dataBeanConfig;
+    }
+
+    public String getJsonFromExcel(String fileLocation) throws Exception {
+        return this.dataBeanConfig.objectMapper().writeValueAsString(this.getUiModelFromExcel(fileLocation));
+    }
+
+    protected MutableSet<UIModel> getUiModelFromExcel(String fileLocation) throws Exception {
 
         AtomicInteger parentId = new AtomicInteger();
-        MutableList<SummarySheet> summarySheets = this.parseExcel(fileLocation, fileName);
+        MutableList<SummarySheet> summarySheets = this.parseExcel(fileLocation);
         SummaryChart summaryChart = this.preProcessData(summarySheets);
         return summaryChart
                 .getChartInfo()
@@ -77,8 +88,8 @@ public class ParserService {
         return summaryChart;
     }
 
-    protected MutableList<SummarySheet> parseExcel(String fileLocation, String fileName) throws Exception {
-        File xlsxFile = FileHelper.getFileFromResouce(fileLocation, fileName);
+    protected MutableList<SummarySheet> parseExcel(String fileLocation) throws Exception {
+        File xlsxFile = FileUtils.getFile(fileLocation);
         PoijiOptions options = PoijiOptions.PoijiOptionsBuilder.settings().trimCellValue(true)
                 .caseInsensitive(true)
                 .ignoreWhitespaces(true)
