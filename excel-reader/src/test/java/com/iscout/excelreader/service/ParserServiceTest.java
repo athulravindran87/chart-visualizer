@@ -1,10 +1,12 @@
 package com.iscout.excelreader.service;
 
 
-import com.iscout.excelreader.bean.DataBeanConfig;
 import com.iscout.excelreader.model.SummaryChart;
 import com.iscout.excelreader.model.SummarySheet;
+import com.iscout.excelreader.model.UIModel;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.MutableSet;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -17,13 +19,20 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertNotNull;
 
-public class SummarySheetParserTest {
+public class ParserServiceTest {
+
+    private ParserService testObj;
+
+    @Before
+    public void setUp() {
+        this.testObj = new ParserService();
+
+    }
 
     @Test
     public void testSpreadSheetParser() throws Exception {
-        MutableList<SummarySheet> test = SummarySheetParser.parseExcel("test", "Summary program.xlsx");
+        MutableList<SummarySheet> test = this.testObj.parseExcel("test", "Summary program.xlsx");
         assertThat(test, hasSize(38));
         assertThat(test, allOf(hasItem(allOf(
                 hasProperty("rowCount", equalTo(1)),
@@ -50,18 +59,18 @@ public class SummarySheetParserTest {
 
     @Test
     public void testPreProcessData() throws Exception {
-        MutableList<SummarySheet> test = SummarySheetParser.parseExcel("test", "Summary program.xlsx");
-        SummaryChart summaryChart = SummarySheetParser.preProcessData(test);
+        MutableList<SummarySheet> test = this.testObj.parseExcel("test", "Summary program.xlsx");
+        SummaryChart summaryChart = this.testObj.preProcessData(test);
         assertThat(summaryChart.getChartInfo(), aMapWithSize(2));
         assertThat(summaryChart.getChartRangeStart(), equalTo(LocalDate.of(2018, 1, 18)));
         assertThat(summaryChart.getChartRangeEnd(), equalTo(LocalDate.of(2024, 6, 24)));
 
         assertThat(summaryChart.getChartInfo().get("Arden Station"), allOf(
-                                hasItem(
-                                        allOf(
-                                                hasProperty("description", equalTo("Piling Works ( 18-Apr-18 to 20-Dec-18 )")),
-                                                hasProperty("startDate", equalTo(LocalDate.of(2018, 4, 18))),
-                                                hasProperty("endDate", equalTo(LocalDate.of(2018, 12, 20))))),
+                hasItem(
+                        allOf(
+                                hasProperty("description", equalTo("Piling Works ( 18-Apr-18 to 20-Dec-18 )")),
+                                hasProperty("startDate", equalTo(LocalDate.of(2018, 4, 18))),
+                                hasProperty("endDate", equalTo(LocalDate.of(2018, 12, 20))))),
                 hasItem(
                         allOf(
                                 hasProperty("description", equalTo("Excavation Works ( 10-Aug-18 to 14-Jun-19 )")),
@@ -70,11 +79,8 @@ public class SummarySheetParserTest {
     }
 
     @Test
-    public void convertToJson() throws Exception {
-        MutableList<SummarySheet> test = SummarySheetParser.parseExcel("test", "Summary program.xlsx");
-        SummaryChart summaryChart = SummarySheetParser.preProcessData(test);
-
-        String json = new DataBeanConfig().objectMapper().writeValueAsString(summaryChart);
-        assertNotNull(json);
+    public void testConvertToJson() throws Exception {
+        MutableSet<UIModel> uiModels = this.testObj.parseExcelToJson("test", "Summary program.xlsx");
+        assertThat(uiModels, hasSize(14));
     }
 }
