@@ -7,6 +7,7 @@ import com.iscout.excelreader.model.SummarySheet;
 import com.iscout.excelreader.model.UIModel;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.MutableSet;
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,9 +19,11 @@ import static org.hamcrest.Matchers.aMapWithSize;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 public class ParserServiceTest {
@@ -34,7 +37,7 @@ public class ParserServiceTest {
 
     @Test
     public void testSpreadSheetParser() throws Exception {
-        MutableList<SummarySheet> test = this.testObj.parseExcel("test/Summary program.xlsx");
+        MutableList<SummarySheet> test = this.testObj.parseExcel("classpath:test/Summary program.xlsx");
         assertThat(test, hasSize(38));
         assertThat(test, allOf(hasItem(allOf(
                 hasProperty("rowCount", equalTo(1)),
@@ -61,7 +64,7 @@ public class ParserServiceTest {
 
     @Test
     public void testPreProcessData() throws Exception {
-        MutableList<SummarySheet> test = this.testObj.parseExcel("test/Summary program.xlsx");
+        MutableList<SummarySheet> test = this.testObj.parseExcel("classpath:test/Summary program.xlsx");
         SummaryChart summaryChart = this.testObj.preProcessData(test);
         assertThat(summaryChart.getChartInfo(), aMapWithSize(2));
         assertThat(summaryChart.getChartRangeStart(), equalTo(LocalDate.of(2018, 1, 18)));
@@ -82,13 +85,28 @@ public class ParserServiceTest {
 
     @Test
     public void testConvertToUIModel() throws Exception {
-        MutableSet<UIModel> uiModels = this.testObj.getUiModelFromExcel("test/Summary program.xlsx");
+        MutableSet<UIModel> uiModels = this.testObj.getUiModelFromExcel("classpath:test/Summary program.xlsx");
         assertThat(uiModels, hasSize(14));
+        assertThat(uiModels, allOf(CoreMatchers.hasItem(allOf(
+                hasProperty("pName", equalTo("Arden Station")),
+                hasProperty("pID", equalTo(1)),
+                hasProperty("pGroup", equalTo(1)),
+                hasProperty("pOpen", equalTo(1)),
+                hasProperty("pClass", equalTo("ggroupblack"))))));
+
+        assertThat(uiModels, allOf(CoreMatchers.hasItem(allOf(
+                hasProperty("pName", equalTo("Piling Works ( 18-Apr-18 to 20-Dec-18 )")),
+                hasProperty("pID", greaterThan(10)),
+                hasProperty("pParent", equalTo(1)),
+                hasProperty("pGroup", equalTo(0)),
+                hasProperty("pOpen", equalTo(0)),
+                hasProperty("pClass", notNullValue())))));
+
     }
 
     @Test
     public void testConvertToJson() throws Exception {
-        String jsonString = this.testObj.getJsonFromExcel("test/Summary program.xlsx");
+        String jsonString = this.testObj.getJsonFromExcel("classpath:test/Summary program.xlsx");
         assertThat(jsonString, not(emptyString()));
     }
 }

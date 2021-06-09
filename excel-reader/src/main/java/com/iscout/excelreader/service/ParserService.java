@@ -7,7 +7,6 @@ import com.iscout.excelreader.model.UIModel;
 import com.poiji.bind.Poiji;
 import com.poiji.option.PoijiOptions;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.collections.api.bag.MutableBag;
 import org.eclipse.collections.api.list.MutableList;
@@ -17,6 +16,7 @@ import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -89,7 +89,7 @@ public class ParserService {
     }
 
     protected MutableList<SummarySheet> parseExcel(String fileLocation) throws Exception {
-        File xlsxFile = FileUtils.getFile(fileLocation);
+        File xlsxFile = ResourceUtils.getFile(fileLocation);
         PoijiOptions options = PoijiOptions.PoijiOptionsBuilder.settings().trimCellValue(true)
                 .caseInsensitive(true)
                 .ignoreWhitespaces(true)
@@ -105,6 +105,8 @@ public class ParserService {
         MutableList<UIModel> models = Lists.mutable.of(UIModel.builder()
                                                                .pName(summaryChart.getOne())
                                                                .pID(atomicInteger.get())
+                                                               .pGroup(1)
+                                                               .pOpen(1)
                                                                .pClass("ggroupblack")
                                                                .build())
                 .withAll(summaryChart.getTwo()
