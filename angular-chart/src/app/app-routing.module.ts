@@ -6,7 +6,7 @@ import {GanttUiComponent} from './gantt-ui/gantt-ui.component';
 const routes: Routes = [
 
   {path: '', component: FileUploadComponent},
-{path: 'gantt', component: GanttUiComponent},
+  {path: 'gantt', component: GanttUiComponent},
 
 
 
