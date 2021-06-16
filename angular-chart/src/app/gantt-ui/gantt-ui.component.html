@@ -1,7 +1,10 @@
 <h3>Gantt Chart</h3>
 
 
-
+<div #screen>
 <div style="height:300px;" class="gantt" id="GanttChartDIV">
   <ng-gantt [options]="editorOptions" [data]="data" #editor></ng-gantt>
 </div>
+</div>
+
+<button (click)="capture()">Download</button>

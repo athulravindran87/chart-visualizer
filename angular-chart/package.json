@@ -20,6 +20,7 @@
     "@angular/router": "~12.0.2",
     "jsgantt-improved": "^2.8.2",
     "ng-gantt": "^2.5.0",
+    "ngx-capture": "^0.10.2",
     "rxjs": "~6.6.0",
     "tslib": "^2.1.0",
     "zone.js": "~0.11.4"

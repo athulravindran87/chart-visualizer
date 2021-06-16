@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild} from '@angular/core';
 import { Validators, FormBuilder } from "@angular/forms";
 import { GanttEditorComponent, GanttEditorOptions } from 'ng-gantt';
+import { NgxCaptureService } from 'ngx-capture';
 
 @Component({
   selector: 'app-gantt-ui',
@@ -9,12 +10,13 @@ import { GanttEditorComponent, GanttEditorOptions } from 'ng-gantt';
 })
 export class GanttUiComponent implements OnInit {
 
-  @ViewChild("editor")
+  @ViewChild('editor')
   editor: GanttEditorComponent = new GanttEditorComponent;
   public editorOptions: GanttEditorOptions = new GanttEditorOptions;
   public data: any;
+  imgBase64: any=''
   
-  constructor() { }
+  constructor(private captureService:NgxCaptureService) { }
 
   ngOnInit(): void {
 
@@ -39,6 +41,38 @@ export class GanttUiComponent implements OnInit {
     };
 
 
+
+  }
+  @ViewChild('screen', { static: true }) screen: any;
+
+  capture()
+  {
+    this.captureService.getImage(this.screen.nativeElement, true).toPromise().then(img=>{
+      console.log(img);
+      this.imgBase64=img;
+      this.save('GanttChart');
+     
+    })
+  }
+
+  DataURIToBlob(dataURI: string) {
+    const splitDataURI = dataURI.split(',');
+    const byteString = splitDataURI[0].indexOf('base64') >= 0 ? atob(splitDataURI[1]) : decodeURI(splitDataURI[1]);
+    const mimeString = splitDataURI[0].split(':')[1].split(';')[0];
+    const ia = new Uint8Array(byteString.length)
+    for (let i = 0; i < byteString.length; i++)
+        ia[i] = byteString.charCodeAt(i);
+      
+        return new Blob([ia], { type: mimeString });
+}
+
+
+  save(fileName: string){
+    var a = document.createElement('a');
+    var file = this.DataURIToBlob(this.imgBase64);
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
 
   }
 
