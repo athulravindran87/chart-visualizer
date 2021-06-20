@@ -30,6 +30,7 @@ public class ParserService {
 
     private final static MutableList<String> COLORS = Lists.mutable.of("gtaskblue",
                                                                        "gtaskred", "gtaskgreen", "gtaskyellow", "gtaskpurple", "gtaskpink");
+    public static final int MAX_INDEX = 5;
 
     private final DataBeanConfig dataBeanConfig;
 
@@ -116,13 +117,14 @@ public class ParserService {
                                          .pEnd(summaryChartLineItem.getEndDate().toString())
                                          .pParent(atomicInteger.get())
                                          .pID(childId.incrementAndGet())
-                                         .pClass(COLORS.get(getChiildColorIndex(childId)))
+                                         .pClass(COLORS.get(this.getChildColorIndex(childId)))
                                          .build()).toList());
+
         return models;
     }
 
-    private int getChiildColorIndex(AtomicInteger childId) {
+    private int getChildColorIndex(AtomicInteger childId) {
         int index = Math.toIntExact(childId.get() % 10);
-        return index > 5 ? index - 5 : index;
+        return index > MAX_INDEX ? index - MAX_INDEX : index;
     }
 }
