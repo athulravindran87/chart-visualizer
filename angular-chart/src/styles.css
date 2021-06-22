@@ -3,6 +3,19 @@
 
 .gmainleft{
 
-    width: 30%;
+    width: 20%;
+    overflow-x: scroll;
 
 }
+
+.gmainright {
+    width: 80%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    top: 0;
+}
+
+.gchartcontainer {
+    width: 100%;
+    overflow-x: scroll;
+  }
