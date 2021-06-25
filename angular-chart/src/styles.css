@@ -88,6 +88,7 @@ div.gantt {
   
   .gtaskcelldiv {
     position: relative;
+    height: 22.8px;
   }
   
   /* Task list defaults */
@@ -854,7 +855,7 @@ div.gantt {
   .gcharttable tr,
   .gcharttableh tr,
   .gtasktable tr {
-    height: 22px !important;
+    height: 23px !important;
   }
   
   .gtasktableouterwrapper {
