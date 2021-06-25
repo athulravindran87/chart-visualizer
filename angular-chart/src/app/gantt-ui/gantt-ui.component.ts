@@ -28,7 +28,7 @@ export class GanttUiComponent implements OnInit {
       vShowEndDate: 0,
       vShowRes: 0,
       vFormatArr: ['Week', 'Month', 'Quarter'],
-      vQuarterColWidth: 40,
+      vQuarterColWidth: 35,
       vShowComp: 0,
       vTotalHeight: 400,
       
