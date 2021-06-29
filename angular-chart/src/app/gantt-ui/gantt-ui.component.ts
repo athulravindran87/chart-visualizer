@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {GanttEditorComponent, GanttEditorOptions} from 'ng-gantt';
 import jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
+import domtoimage from 'dom-to-image';
 
 @Component({
   selector: 'app-gantt-ui',
@@ -47,20 +48,62 @@ export class GanttUiComponent implements OnInit {
   }
 
   downloadAsPDF() {
-    
-    var content = document.getElementById('ganttChart') as HTMLCanvasElement;
 
-    html2canvas(content).then(canvas => {
-      var imgWidth = 208;
-      var imgHeight = canvas.height * imgWidth / canvas.width;
-      const contentDataURL = canvas.toDataURL('image/png')
-      let pdf = new jspdf('p','cm','a4');
-      var position = 0;
-      pdf.addImage(contentDataURL, 'PNG', 0, position, 22.5, 28.0);
-      pdf.save('ganttPDF.pdf');
+    var node = document.getElementById('ganttChart') as HTMLImageElement;
 
-    });
+    var img: HTMLImageElement;
+    var filename;
+    var newImage: string | HTMLImageElement | HTMLCanvasElement | Uint8Array;
+
+
+    domtoimage.toPng(node, { bgcolor: '#fff' })
+
+      .then(function(dataUrl) {
+
+        img = new Image();
+        img.src = dataUrl;
+        newImage = img.src;
+
+        img.onload = function(){
+
+        var pdfWidth = img.width;
+        var pdfHeight = img.height;
+
+          // FileSaver.saveAs(dataUrl, 'my-pdfimage.png'); // Save as Image
+
+          var doc;
+
+          if(pdfWidth > pdfHeight)
+          {
+            doc = new jspdf('l', 'px', [pdfWidth , pdfHeight]);
+          }
+          else
+          {
+            doc = new jspdf('p', 'px', [pdfWidth , pdfHeight]);
+          }
+
+
+          var width = doc.internal.pageSize.getWidth();
+          var height = doc.internal.pageSize.getHeight();
+
+
+          doc.addImage(newImage, 'PNG',  10, 10, width, height);
+          filename = 'ganttChart' + '.pdf';
+          doc.save(filename);
+
+        };
+
+
+      })
+      .catch(function(error) {
+
+       // Error Handling
+
+      });
+
   }
+
+  
 
 
 
