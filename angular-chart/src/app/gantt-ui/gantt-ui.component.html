@@ -1,12 +1,15 @@
-<h3>Gantt Chart</h3>
+<h3>Gantt Chart
+
+  <button (click)="downloadAsPDF()">Export To PDF</button>
+</h3>
 
 
-<div #screen>
-<div style="height:300px;" class="gantt" id="GanttChartDIV">
+<div id="ganttChart" #ganttChart>
+<div class="gantt" id="GanttChartDIV">
   <ng-gantt [options]="editorOptions" [data]="data" #editor></ng-gantt>
 </div>
 </div>
 <br>
 
-<!--
-<button (click)="capture()">Download</button> -->
+
+

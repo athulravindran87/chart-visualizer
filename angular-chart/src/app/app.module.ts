@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GanttUiComponent } from './gantt-ui/gantt-ui.component';
 import { FileUploadComponent } from './file-upload/file-upload.component';
-import { NgxCaptureModule } from 'ngx-capture';
+
 
 @NgModule({
   declarations: [
@@ -20,7 +20,7 @@ import { NgxCaptureModule } from 'ngx-capture';
     AppRoutingModule,
     NgGanttEditorModule,
     HttpClientModule,
-    NgxCaptureModule,
+  
   ],
   providers: [],
   bootstrap: [AppComponent]

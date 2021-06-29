@@ -1,6 +1,7 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {GanttEditorComponent, GanttEditorOptions} from 'ng-gantt';
-import {NgxCaptureService} from 'ngx-capture';
+import jspdf from 'jspdf';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-gantt-ui',
@@ -13,9 +14,10 @@ export class GanttUiComponent implements OnInit {
   editor: GanttEditorComponent = new GanttEditorComponent;
   public editorOptions: GanttEditorOptions = new GanttEditorOptions;
   public data: any;
-  imgBase64: any=''
 
-  constructor(private captureService:NgxCaptureService) { }
+ 
+
+  constructor() { }
 
   ngOnInit(): void {
 
@@ -43,38 +45,26 @@ export class GanttUiComponent implements OnInit {
 
 
   }
-  @ViewChild('screen', { static: true }) screen: any;
 
-  capture()
-  {
-    this.captureService.getImage(this.screen.nativeElement, true).toPromise().then(img=>{
-      console.log(img);
-      this.imgBase64=img;
-      this.save('GanttChart');
+  downloadAsPDF() {
+    
+    var content = document.getElementById('ganttChart') as HTMLCanvasElement;
 
-    })
+    html2canvas(content).then(canvas => {
+      var imgWidth = 208;
+      var imgHeight = canvas.height * imgWidth / canvas.width;
+      const contentDataURL = canvas.toDataURL('image/png')
+      let pdf = new jspdf('p','cm','a4');
+      var position = 0;
+      pdf.addImage(contentDataURL, 'PNG', 0, position, 22.5, 28.0);
+      pdf.save('ganttPDF.pdf');
+
+    });
   }
 
-  DataURIToBlob(dataURI: string) {
-    const splitDataURI = dataURI.split(',');
-    const byteString = splitDataURI[0].indexOf('base64') >= 0 ? atob(splitDataURI[1]) : decodeURI(splitDataURI[1]);
-    const mimeString = splitDataURI[0].split(':')[1].split(';')[0];
-    const ia = new Uint8Array(byteString.length)
-    for (let i = 0; i < byteString.length; i++)
-        ia[i] = byteString.charCodeAt(i);
-
-        return new Blob([ia], { type: mimeString });
-}
 
 
-  save(fileName: string){
-    var a = document.createElement('a');
-    var file = this.DataURIToBlob(this.imgBase64);
-    a.href = URL.createObjectURL(file);
-    a.download = fileName;
-    a.click();
-
-  }
+  
 
   initialData(){
     return [
